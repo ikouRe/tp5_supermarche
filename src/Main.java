@@ -3,10 +3,10 @@ public class Main {
 
         // Create rayons
         Rayon[] rayons = {
-                new Rayon("Sucre", 10),
-                new Rayon("Farine", 10),
-                new Rayon("Beurre", 10),
-                new Rayon("Lait", 10)
+                new Rayon(1, "Sucre", 10),
+                new Rayon(2, "Farine", 10),
+                new Rayon(3, "Beurre", 10),
+                new Rayon(4, "Lait", 10)
         };
 
         FileChariots chariots = new FileChariots(2);
@@ -24,10 +24,12 @@ public class Main {
             clients[i] = new Client(i + 1, chariots, rayons, tapis);
             clients[i].start();
         }
-
+        // Attendre que tous les clients aient terminé
         for (Client c : clients)
             c.join();
 
         System.out.println("=== Tous les clients sont passés. Fin de simulation. ===");
+        chef.interrupt();
+        employe.interrupt();
     }
 }

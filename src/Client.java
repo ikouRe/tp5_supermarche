@@ -1,12 +1,26 @@
 import java.util.Random;
+import java.util.logging.Logger;
 
+/**
+ * Classe représentant un client du supermarché.
+ *
+ * Règles :
+ * - Le client doit prendre un chariot avant d'entrer.
+ * - Il traverse les quatre rayons dans l'ordre.
+ * - Il doit attendre si un rayon est vide.
+ * - Un seul client peut déposer à la caisse à la fois.
+ * - Le client dépose ses articles un par un, puis dépose le marqueur -1.
+ * - Il attend ensuite la fin du paiement avant de rendre son chariot.
+ */
 public class Client extends Thread {
+    private static final Logger logger = Logger.getLogger(Client.class.getName());
     private int id;
     private FileChariots chariots;
     private Rayon[] rayons;
     private Tapis tapis;
-
-    private int[] liste;
+    // Liste des quantités à acheter pour les 4 produits (0: Sucre, 1: Farine, 2:
+    // Beurre, 3: Lait)
+    private int[] listeAchat;
 
     public Client(int id, FileChariots c, Rayon[] r, Tapis t) {
         this.id = id;
@@ -16,49 +30,54 @@ public class Client extends Thread {
         genererListe();
     }
 
+    /**
+     * Génère une liste de courses aléatoire entre 1 et 5 articles par rayon.
+     */
     private void genererListe() {
         Random rnd = new Random();
-        liste = new int[4];
+        listeAchat = new int[4];
         for (int i = 0; i < 4; i++)
-            liste[i] = rnd.nextInt(3) + 1; // want 1-3 items each
+            listeAchat[i] = rnd.nextInt(5) + 1; // want 1-5 items each
     }
 
     @Override
     public void run() {
         try {
-            // 1: take chariot
+
             chariots.prendreChariot(id);
-
-            // 2: visit rayons
+            // parcours des 4 rayons
             for (int i = 0; i < 4; i++) {
-                for (int k = 0; k < liste[i]; k++) {
-                    rayons[i].takeProduct(id);
+                System.out.println("Client " + id + " entre dans le rayon " + rayons[i].getNumR()
+                        + " (" + rayons[i].getProduct() + ")");
+                for (int k = 0; k < listeAchat[i]; k++) {
+                    rayons[i].takeProduct(id); // peut bloquer si stock 0
                 }
-                Thread.sleep(300);
+                Thread.sleep(300); // déplacement entre les rayons
             }
 
-            // 3: go to caisse
             System.out.println("Client " + id + " arrive en caisse");
-
-            // 4: put items on tapis
+            tapis.accederCaisse(id);
+            // Dépôt des produits
             for (int i = 0; i < 4; i++) {
-                for (int k = 0; k < liste[i]; k++) {
+                for (int k = 0; k < listeAchat[i]; k++) {
                     tapis.deposer(i, id);
-                    Thread.sleep(20);
+                    Thread.sleep(20); // temps de dépôt d'un article
                 }
             }
 
-            // 5: marker
             tapis.deposer(-1, id);
-            System.out.println("Client " + id + " a fini de déposer.");
+            System.out.println("Client " + id + " a fini de déposer ses articles.");
 
-            // 6: simulate payment
-            Thread.sleep(300);
+            // Attendre le paiement effectué par l’employé
+            tapis.attendrePaiement(id);
 
-            // 7: return chariot
+            // Libérer la caisse
+            tapis.libererCaisse(id);
+
             chariots.rendreChariot(id);
 
         } catch (InterruptedException e) {
+            logger.warning("Client " + id + " interrompu pendant son exécution.");
         }
     }
 }
