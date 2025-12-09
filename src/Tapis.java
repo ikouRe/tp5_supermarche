@@ -1,3 +1,4 @@
+
 /**
  * Classe représentant le tapis de caisse.
  * - Modélisé comme un buffer circulaire (FIFO) de taille fixe
@@ -9,6 +10,7 @@
  *
  */
 public class Tapis {
+
     private int[] casesTapis;
     private int taille;
     private int debut = 0;
@@ -23,8 +25,8 @@ public class Tapis {
     }
 
     /**
-     * Le client demande à entrer à la caisse.
-     * Un seul client peut déposer ses produits à la fois.
+     * Le client demande à entrer à la caisse. Un seul client peut déposer ses
+     * produits à la fois.
      */
     public synchronized void accederCaisse(int clientId) throws InterruptedException {
         while (occupied) {
@@ -75,7 +77,7 @@ public class Tapis {
         if (item == -1) {
             System.out.println("client a finis de déposer ses items.");
         } else {
-            System.out.println("Client " + clientId + " dépose l’item " + item + " sur le tapis (case " + fin + ")");
+            System.out.println("Client " + clientId + " dépose l'item " + item + " sur le tapis (case " + fin + ")");
         }
         casesTapis[fin] = item;
         // gestion circulaire des indices
@@ -95,7 +97,7 @@ public class Tapis {
         if (item == -1) {
             System.out.println("Employé: fin du client, paiement...");
         } else {
-            System.out.println("Employé retire l’item " + item + " . Tapis (case " + debut + ")");
+            System.out.println("Employé retire l'item " + item + " . Tapis (case " + debut + ")");
         }
 
         debut = (debut + 1) % taille;
