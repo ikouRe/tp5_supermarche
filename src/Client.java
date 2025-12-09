@@ -1,18 +1,18 @@
+
 import java.util.Random;
 import java.util.logging.Logger;
 
 /**
  * Classe représentant un client du supermarché.
  *
- * Règles :
- * - Le client doit prendre un chariot avant d'entrer.
- * - Il traverse les quatre rayons dans l'ordre.
- * - Il doit attendre si un rayon est vide.
- * - Un seul client peut déposer à la caisse à la fois.
- * - Le client dépose ses articles un par un, puis dépose le marqueur -1.
- * - Il attend ensuite la fin du paiement avant de rendre son chariot.
+ * Règles : - Le client doit prendre un chariot avant d'entrer. - Il traverse
+ * les quatre rayons dans l'ordre. - Il doit attendre si un rayon est vide. - Un
+ * seul client peut déposer à la caisse à la fois. - Le client dépose ses
+ * articles un par un, puis dépose le marqueur -1. - Il attend ensuite la fin du
+ * paiement avant de rendre son chariot.
  */
 public class Client extends Thread {
+
     private static final Logger logger = Logger.getLogger(Client.class.getName());
     private int id;
     private FileChariots chariots;
@@ -36,8 +36,18 @@ public class Client extends Thread {
     private void genererListe() {
         Random rnd = new Random();
         listeAchat = new int[4];
-        for (int i = 0; i < 4; i++)
-            listeAchat[i] = rnd.nextInt(5) + 1; // want 1-5 items each
+        int remaining = 5; // total max 5 articles toutes catégories confondues
+
+        for (int i = 0; i < 4; i++) {
+            if (i == 3) {
+                // le dernier rayon prend le reste
+                listeAchat[i] = remaining;
+            } else {
+                int val = rnd.nextInt(remaining + 1); // 0..remaining
+                listeAchat[i] = val;
+                remaining -= val;
+            }
+        }
     }
 
     @Override

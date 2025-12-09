@@ -18,6 +18,9 @@ public class Tapis {
     private int nbElements = 0;
     private boolean occupied = false;
     private boolean paymentDone = false;
+    // Compteurs séparés pour l'affichage : dépôt client vs retrait employé
+    private int nbDeposesClient = 0;
+    private int nbRetiresEmploye = 0;
 
     public Tapis(int taille) {
         this.taille = taille;
@@ -34,6 +37,8 @@ public class Tapis {
             wait();
         }
         occupied = true;
+        nbDeposesClient = 0; // nouveau client -> on remet le compteur d'affichage
+        nbRetiresEmploye = 0; // l'employé redémarre son compteur pour ce client
         paymentDone = false; // nouveau client
         System.out.println("Client " + clientId + " accède à la caisse.");
     }
@@ -74,10 +79,10 @@ public class Tapis {
             System.out.println("Client " + clientId + " attend: tapis plein");
             wait();
         }
-        if (item == -1) {
-            System.out.println("client a finis de déposer ses items.");
-        } else {
-            System.out.println("Client " + clientId + " dépose l'item " + item + " sur le tapis (case " + fin + ")");
+        if (item != -1) {
+            nbDeposesClient++;
+            System.out.println("Client " + clientId + " dépose l'item " + nbDeposesClient + " sur le tapis (case "
+                    + fin + ")");
         }
         casesTapis[fin] = item;
         // gestion circulaire des indices
@@ -97,7 +102,8 @@ public class Tapis {
         if (item == -1) {
             System.out.println("Employé: fin du client, paiement...");
         } else {
-            System.out.println("Employé retire l'item " + item + " . Tapis (case " + debut + ")");
+            nbRetiresEmploye++;
+            System.out.println("Employé retire l'item " + nbRetiresEmploye + " . Tapis (case " + debut + ")");
         }
 
         debut = (debut + 1) % taille;

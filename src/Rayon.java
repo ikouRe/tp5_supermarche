@@ -1,3 +1,4 @@
+
 /**
  * Classe représentant un Rayon du supermarché.
  * Il s'agit d'un objet PARTAGÉ entre :
@@ -9,6 +10,7 @@
  * - le chef de rayon réveille les clients lorsqu’il ajoute du stock
  */
 public class Rayon {
+
     private int numR; // numero de rayon (0: Sucre, 1: Farine, 2: Beurre, 3: Lait)
     private String product; // Nom du produit (Sucre, Farine, ...)
     private int capacity; // Capacité maximale du rayon STOCK_MAX
@@ -34,8 +36,8 @@ public class Rayon {
     }
 
     /**
-     * Méthode appelée par le Chef de rayon.
-     * Il ajoute jusqu'à 'quantity' exemplaires dans la limite de la capacité.
+     * Méthode appelée par le Chef de rayon. Il ajoute jusqu'à 'quantity'
+     * exemplaires dans la limite de la capacité.
      */
     public synchronized void addStock(int quantity) {
         int i = 0;
@@ -45,8 +47,8 @@ public class Rayon {
         }
         if (i > 0) {
             System.out.println(
-                    "Employé remet " + i + " unités de " + product + " dans le Rayon " + numR + " (stock = " + stock
-                            + "/" + capacity + ")");
+                    "Chef de rayon remet " + i + " unités de " + product + " dans le Rayon " + numR + " (stock = " + stock
+                    + "/" + capacity + ")");
 
             // On réveille les clients en attente sur ce rayon
             notifyAll();

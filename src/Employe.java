@@ -33,8 +33,6 @@ public class Employe extends Thread {
                     continue; // passe au client suivant
                 }
 
-                System.out.println("Employé prend item: " + item);
-                Thread.sleep(100); // temps de scan d’un produit
             }
         } catch (InterruptedException e) {
             logger.warning("Employé interrompu -> arrêt du poste de caisse.");
