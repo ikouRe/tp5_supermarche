@@ -8,7 +8,7 @@ public class Main {
                 new Rayon(3, "Beurre", 10),
                 new Rayon(4, "Lait", 10)
         };
-
+        // petit chiffre pour test rapide
         FileChariots chariots = new FileChariots(2);
         Tapis tapis = new Tapis(10);
 
